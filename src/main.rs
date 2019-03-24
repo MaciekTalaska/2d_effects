@@ -8,10 +8,10 @@ use std::io::BufReader;
 
 fn read_image_data(image_name: &String) -> (usize, usize, Vec<u32>) {
     let file = File::open(image_name).unwrap();
-    let string_buffer = String::new();
     let mut reader = std::io::BufReader::new(file);
     let (width, height) = read_image_info(&mut reader);
-    let mut rgb_buffer: Vec<u8> = Vec::with_capacity(640 * 480 * 3);
+
+    let mut rgb_buffer: Vec<u8> = Vec::with_capacity(width * height * 3);
     let read_bytes = reader.read_to_end(rgb_buffer.as_mut()).unwrap();
 
     if read_bytes !=  width * height * 3 {
@@ -41,23 +41,42 @@ fn read_image_info(reader: &mut BufReader<File>) -> (usize, usize) {
     for _i in 0..3 {
         reader.read_line(&mut string_buffer).unwrap();
     }
+
     let ppm_id = string_buffer.lines().nth(0usize).unwrap();
-    if ppm_id.to_string() != "P6" {
-        println!("invalid header");
-        std::process::exit(3);
-    }
-    let size = string_buffer.lines().nth(1usize).unwrap().to_string().clone();
-    let mut xy = size.split_whitespace();
-    let width = xy.next().unwrap();
-    let height = xy.next().unwrap();
-    let width = width.parse::<usize>().expect("image width should be a number");
-    let height = height.parse::<usize>().expect("image height should be a number");
-    let bpp_str = string_buffer.lines().nth(2usize).unwrap().to_string().clone();
+    validate_ppm_image(ppm_id);
+
+    let image_size = string_buffer.lines().nth(1usize).unwrap().to_string().clone();
+    let (width, height) = extract_image_size(image_size);
+
+    let color_depth = string_buffer.lines().nth(2usize).unwrap().to_string().clone();
+    validate_color_depth(color_depth);
+
+    (width, height)
+}
+
+fn validate_color_depth(bpp_str: String) {
     let bpp = bpp_str.parse::<usize>().expect("image bit depth should be a number");
     if bpp != 255usize {
         println!("only 8bpp RGB images are supported!");
         std::process::exit(4);
     }
+}
+
+fn validate_ppm_image(ppm_id: &str) {
+    if ppm_id.to_string() != "P6" {
+        println!("invalid header");
+        std::process::exit(3);
+    }
+}
+
+fn extract_image_size(size: String) -> (usize, usize) {
+    let image_size: Vec<String> = size.split_whitespace().into_iter().map(|w| w.to_string()).collect();
+    let width = image_size.first().unwrap()
+        .parse::<usize>()
+        .expect("image width should be a number");
+    let height = image_size.last().unwrap().
+        parse::<usize>()
+        .expect("image height should be a number");
     (width, height)
 }
 
