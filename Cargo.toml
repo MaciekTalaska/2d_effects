@@ -5,3 +5,4 @@ authors = ["MaciekTalaska <maciek.talaska@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+minifb = "0.11.2"
