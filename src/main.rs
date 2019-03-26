@@ -6,8 +6,8 @@ use std::env;
 use std::fs::File;
 use std::io::{Read, BufRead};
 use std::io::BufReader;
-use rand::{thread_rng, Rng};
-use std::thread::current;
+use rand::{thread_rng};
+use rand::seq::SliceRandom;
 
 fn read_image_data(image_name: &String) -> (usize, usize, Vec<u32>) {
     let file = File::open(image_name).unwrap();
@@ -83,17 +83,18 @@ fn extract_image_size(size: String) -> (usize, usize) {
     (width, height)
 }
 
-pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32) {
-    let line = index / 80;
-    let line_offset = line * 640 * 8;
-    let pixel_offset = (index % 80) * 8;
+pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: u32, tile_size: u32) {
+    let tiles_per_line = img_width / tile_size;
+    let line = index / tiles_per_line;
+    let line_offset = line * img_width * tile_size;
+    let pixel_offset = (index % tiles_per_line) * tile_size;
     let offset = line_offset + pixel_offset;
 
     // TODO:
     //  https://stackoverflow.com/questions/28219231/how-to-idiomatically-copy-a-slice
-    for y in 0..8 {
-        for x in 0..8 {
-            let current = (offset + y * 640 + x) as usize;
+    for y in 0..tile_size {
+        for x in 0..tile_size {
+            let current = (offset + y * img_width + x) as usize;
             let value = src[current];
             dst[current] = value;
         }
@@ -119,19 +120,22 @@ fn main() {
                                  height,
                                  WindowOptions::default()).unwrap_or_else(|e| {panic!("{}", e)});
 
-    let mut randomizer : Vec<u32> = (0..4800).collect();
-    thread_rng().shuffle(&mut randomizer);
+    let tile_size = 8;
+    let tile_sqr = tile_size * tile_size;
+    let tiles_count = width * height / tile_sqr;
+
+    let mut randomizer : Vec<u32> = (0..tiles_count as u32).collect();
+    randomizer.shuffle(&mut thread_rng());
     let mut dest_buffer = vec![0; width * height * 4];
 
     let mut current_index : usize = 0;
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        if current_index < 4800 {
+        if current_index < tiles_count {
             let v = randomizer[current_index];
             current_index = current_index + 1;
-            process_framebuffer(&buffer, &mut dest_buffer, v);
+            process_framebuffer(&buffer, &mut dest_buffer, v, width as u32, tile_size as u32);
         }
         window.update_with_buffer(&dest_buffer).unwrap();
     }
-
 }
 
