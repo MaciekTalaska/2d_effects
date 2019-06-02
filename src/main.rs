@@ -1,7 +1,7 @@
 extern crate minifb;
 extern crate rand;
+extern crate tinyppm;
 
-mod ppm;
 
 use minifb::{Key, Window, WindowOptions};
 use std::env;
@@ -39,7 +39,7 @@ fn main() {
         std::process::exit(2);
     }
 
-    let (width, height, buffer) = ppm::ppm_loader::read_image_data(image_name);
+    let (width, height, buffer) = tinyppm::ppm_loader::read_image_data(image_name);
 
     let mut window = Window::new("ppm viewer in Rust",
                                  width,
