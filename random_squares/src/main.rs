@@ -8,6 +8,7 @@ use std::env;
 use rand::{thread_rng};
 use rand::seq::SliceRandom;
 
+const DEFAULT_TILE_SIZE: usize = 8;
 
 pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: u32, tile_size: u32) {
     let tiles_per_line = img_width / tile_size;
@@ -33,11 +34,16 @@ fn main() {
         println!(".ppm name should be supplied as the argument");
         std::process::exit(1);
     }
-    let image_name = args.last().unwrap();
+    let image_name = args.get(1).unwrap();
     if ! image_name.ends_with(".ppm") {
         println!("only .ppm images are supported");
         std::process::exit(2);
     }
+
+    let tile_size = match args.len() {
+        3 =>  (args.last().unwrap()).parse().unwrap(),
+        _ => DEFAULT_TILE_SIZE,
+    };
 
     let (width, height, buffer) = tinyppm::ppm_loader::read_image_data(image_name);
 
@@ -46,7 +52,6 @@ fn main() {
                                  height,
                                  WindowOptions::default()).unwrap_or_else(|e| {panic!("{}", e)});
 
-    let tile_size = 8;
     let tile_sqr = tile_size * tile_size;
     let tiles_count = width * height / tile_sqr;
 
