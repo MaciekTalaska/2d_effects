@@ -17,15 +17,24 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
     let pixel_offset = (index % tiles_per_line) * tile_size;
     let offset = line_offset + pixel_offset;
 
-    // TODO:
-    //  https://stackoverflow.com/questions/28219231/how-to-idiomatically-copy-a-slice
-    for y in 0..tile_size {
-        for x in 0..tile_size {
-            let current = (offset + y * img_width + x) as usize;
-            let value = src[current];
-            dst[current] = value;
+    if tile_size == 1 {
+        let current = offset as usize;
+        dst[current] = src[current];
+    } else {
+        // TODO:
+        //  https://stackoverflow.com/questions/28219231/how-to-idiomatically-copy-a-slice
+        //  1) check what is faster: clone_from_slice, copy_from_slice, copy_memory
+        //  2) check if there is any performance gain when compared to the double for loop copy
+        for y in 0..tile_size {
+            let current = (offset + y * img_width) as usize;
+            dst[current..current+tile_size as usize].copy_from_slice(&src[current..current+tile_size as usize]);
+//            for x in 0..tile_size {
+//                let current = (offset + y * img_width + x) as usize;
+//                dst[current] = src[current];
+//            }
         }
     }
+
 }
 
 fn main() {
