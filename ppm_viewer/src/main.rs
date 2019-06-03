@@ -7,11 +7,15 @@ use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        println!(".ppm name should be supplied as the argument");
-        std::process::exit(1);
-    }
-    let image_name = args.last().unwrap();
+
+    let default_image = &String::from(r"../resources/sky.ppm");
+
+    // make it simple - assume first argument is bitmap name
+    let image_name = match args.len() > 1 {
+        true => args.get(1).unwrap(),
+        false => default_image,
+    };
+
     if ! image_name.ends_with(".ppm") {
         println!("only .ppm images are supported");
         std::process::exit(2);
