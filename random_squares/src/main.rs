@@ -1,7 +1,7 @@
 extern crate minifb;
 extern crate rand;
 extern crate tinyppm;
-
+extern crate shared;
 
 use minifb::{Key, Window, WindowOptions};
 use std::env;
@@ -30,20 +30,9 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        println!(".ppm name should be supplied as the argument");
-        std::process::exit(1);
-    }
-    let image_name = args.get(1).unwrap();
-    if ! image_name.ends_with(".ppm") {
-        println!("only .ppm images are supported");
-        std::process::exit(2);
-    }
 
-    let tile_size = match args.len() {
-        3 =>  (args.last().unwrap()).parse().unwrap(),
-        _ => DEFAULT_TILE_SIZE,
-    };
+    let image_name = &shared::get_image_name(&args);
+    let tile_size = shared::get_option_or_default_number::<usize>(&args, 2, DEFAULT_TILE_SIZE);
 
     let (width, height, buffer) = tinyppm::ppm_loader::read_image_data(image_name);
 
@@ -69,4 +58,3 @@ fn main() {
         window.update_with_buffer(&dest_buffer).unwrap();
     }
 }
-
