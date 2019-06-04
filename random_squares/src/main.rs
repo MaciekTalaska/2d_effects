@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate structopt;
 extern crate minifb;
 extern crate rand;
 extern crate tinyppm;
@@ -8,8 +10,19 @@ use std::env;
 use rand::{thread_rng};
 use rand::seq::SliceRandom;
 use std::time::Instant;
+use structopt::StructOpt;
 
 const DEFAULT_TILE_SIZE: usize = 8;
+
+#[structopt(name = "random squares")]
+#[derive(StuctOpt)]
+struct Opt {
+    #[structopt(short = "t", long = "tilesize", default = 8)]
+    tilesize: usize,
+
+    #[structopt(short = "fx", long = "fx", default = 1)]
+    fx: u32,
+}
 
 pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: u32, tile_size: u32) {
     let tiles_per_line = img_width / tile_size;
@@ -26,24 +39,28 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
         //  https://stackoverflow.com/questions/28219231/how-to-idiomatically-copy-a-slice
         //  1) check what is faster: clone_from_slice, copy_from_slice, copy_memory
         //  2) check if there is any performance gain when compared to the double for loop copy
-//        for y in 0..tile_size {
-//            let start = (offset + y * img_width) as usize;
-//            let end = start + tile_size as usize;
-//            dst[start..end].copy_from_slice(&src[start..end]);
-//        }
-
         for y in 0..tile_size {
-            for x in 0..tile_size {
-                      let current = (offset + y * img_width + x) as usize;
-                      dst[current] = src[current];
-                  }
+            let start = (offset + y * img_width) as usize;
+            let end = start + tile_size as usize;
+            dst[start..end].copy_from_slice(&src[start..end]);
         }
+
+//        for y in 0..tile_size {
+//            for x in 0..tile_size {
+//                      let current = (offset + y * img_width + x) as usize;
+//                      dst[current] = src[current];
+//                  }
+//        }
     }
 }
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
+//    let opt = Opt::from_args();
+
+//    let image_name = opt.image;
+//    let tile_size = opt.tilesize;
     let image_name = &shared::get_image_name(&args);
     let tile_size = shared::get_option_or_default_number::<usize>(&args, 2, DEFAULT_TILE_SIZE);
 
