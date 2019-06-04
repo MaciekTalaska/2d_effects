@@ -7,6 +7,7 @@ use minifb::{Key, Window, WindowOptions};
 use std::env;
 use rand::{thread_rng};
 use rand::seq::SliceRandom;
+use std::time::Instant;
 
 const DEFAULT_TILE_SIZE: usize = 8;
 
@@ -25,16 +26,19 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
         //  https://stackoverflow.com/questions/28219231/how-to-idiomatically-copy-a-slice
         //  1) check what is faster: clone_from_slice, copy_from_slice, copy_memory
         //  2) check if there is any performance gain when compared to the double for loop copy
+//        for y in 0..tile_size {
+//            let current = (offset + y * img_width) as usize;
+//            dst[current..current+tile_size as usize].copy_from_slice(&src[current..current+tile_size as usize]);
+//        }
+
         for y in 0..tile_size {
             let current = (offset + y * img_width) as usize;
-            dst[current..current+tile_size as usize].copy_from_slice(&src[current..current+tile_size as usize]);
-//            for x in 0..tile_size {
-//                let current = (offset + y * img_width + x) as usize;
-//                dst[current] = src[current];
-//            }
+            for x in 0..tile_size {
+                      let current = (offset + y * img_width + x) as usize;
+                      dst[current] = src[current];
+                  }
         }
     }
-
 }
 
 fn main() {
@@ -58,11 +62,20 @@ fn main() {
     let mut dest_buffer = vec![0; width * height * 4];
 
     let mut current_index : usize = 0;
+
+    let time = Instant::now();
+    let mut end: bool = false;
     while window.is_open() && !window.is_key_down(Key::Escape) {
         if current_index < tiles_count {
             let v = randomizer[current_index];
             current_index = current_index + 1;
             process_framebuffer(&buffer, &mut dest_buffer, v, width as u32, tile_size as u32);
+        } else {
+            if !end {
+                end = true;
+                let t = time.elapsed().as_micros();
+                println!("time elapsed: {}", t);
+            }
         }
         window.update_with_buffer(&dest_buffer).unwrap();
     }
