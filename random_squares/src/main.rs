@@ -27,12 +27,12 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
         //  1) check what is faster: clone_from_slice, copy_from_slice, copy_memory
         //  2) check if there is any performance gain when compared to the double for loop copy
 //        for y in 0..tile_size {
-//            let current = (offset + y * img_width) as usize;
-//            dst[current..current+tile_size as usize].copy_from_slice(&src[current..current+tile_size as usize]);
+//            let start = (offset + y * img_width) as usize;
+//            let end = start + tile_size as usize;
+//            dst[start..end].copy_from_slice(&src[start..end]);
 //        }
 
         for y in 0..tile_size {
-            let current = (offset + y * img_width) as usize;
             for x in 0..tile_size {
                       let current = (offset + y * img_width + x) as usize;
                       dst[current] = src[current];
