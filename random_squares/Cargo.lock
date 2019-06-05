@@ -308,7 +308,6 @@ version = "0.1.0"
 dependencies = [
  "minifb 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "shared 0.1.0",
  "structopt 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "tinyppm 0.1.0",
 ]
@@ -354,10 +353,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cfg-if 0.1.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
-
-[[package]]
-name = "shared"
-version = "0.1.0"
 
 [[package]]
 name = "strsim"

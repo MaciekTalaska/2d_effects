@@ -1,18 +1,13 @@
-#[macro_use]
 extern crate structopt;
 extern crate minifb;
 extern crate rand;
 extern crate tinyppm;
-extern crate shared;
 
 use minifb::{Key, Window, WindowOptions};
-use std::env;
 use rand::{thread_rng};
 use rand::seq::SliceRandom;
 use std::time::Instant;
 use structopt::StructOpt;
-
-const DEFAULT_TILE_SIZE: usize = 8;
 
 #[structopt(name = "just a test")]
 #[derive(StructOpt, Debug)]
@@ -59,15 +54,10 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
 }
 
 fn main() {
-    //let args: Vec<String> = env::args().collect();
-
     let opt = Opt::from_args();
 
     let image_name = &opt.image;
     let tile_size = opt.tile_size;
-
-//    let image_name = &shared::get_image_name(&args);
-//    let tile_size = shared::get_option_or_default_number::<usize>(&args, 2, DEFAULT_TILE_SIZE);
 
     let (width, height, buffer) = tinyppm::ppm_loader::read_image_data(image_name);
 
