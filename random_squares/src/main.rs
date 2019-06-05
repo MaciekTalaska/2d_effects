@@ -14,15 +14,19 @@ use structopt::StructOpt;
 
 const DEFAULT_TILE_SIZE: usize = 8;
 
-#[structopt(name = "random squares")]
-#[derive(StuctOpt)]
+#[structopt(name = "just a test")]
+#[derive(StructOpt, Debug)]
 struct Opt {
-    #[structopt(short = "t", long = "tilesize", default = 8)]
-    tilesize: usize,
+    #[structopt(short = "i", long = "image")]
+    image: String,
 
-    #[structopt(short = "fx", long = "fx", default = 1)]
+    #[structopt(short = "t", long = "tilesize", default_value = "8")]
+    tile_size: usize,
+
+    #[structopt(short = "f", long = "fx", default_value = "1")]
     fx: u32,
 }
+
 
 pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: u32, tile_size: u32) {
     let tiles_per_line = img_width / tile_size;
@@ -55,14 +59,15 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    //let args: Vec<String> = env::args().collect();
 
-//    let opt = Opt::from_args();
+    let opt = Opt::from_args();
 
-//    let image_name = opt.image;
-//    let tile_size = opt.tilesize;
-    let image_name = &shared::get_image_name(&args);
-    let tile_size = shared::get_option_or_default_number::<usize>(&args, 2, DEFAULT_TILE_SIZE);
+    let image_name = &opt.image;
+    let tile_size = opt.tile_size;
+
+//    let image_name = &shared::get_image_name(&args);
+//    let tile_size = shared::get_option_or_default_number::<usize>(&args, 2, DEFAULT_TILE_SIZE);
 
     let (width, height, buffer) = tinyppm::ppm_loader::read_image_data(image_name);
 
