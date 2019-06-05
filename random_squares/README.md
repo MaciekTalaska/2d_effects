@@ -6,6 +6,7 @@ It is possible to specify (and change) the size of the tile. Allowed sizes:
 - 1
 - 2
 - 4
+- 5
 - 8
 - 10
 - 16
