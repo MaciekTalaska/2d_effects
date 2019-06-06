@@ -19,11 +19,11 @@ struct Opt {
     tile_size: usize,
 
     #[structopt(short = "f", long = "fx", default_value = "1")]
-    fx: u32,
+    fx: u8,
 }
 
 
-pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: u32, tile_size: u32) {
+pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: u32, tile_size: u32, fx: u8) {
     let tiles_per_line = img_width / tile_size;
     let line = index / tiles_per_line;
     let line_offset = line * img_width * tile_size;
@@ -34,22 +34,28 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
         let current = offset as usize;
         dst[current] = src[current];
     } else {
-        // TODO:
-        //  https://stackoverflow.com/questions/28219231/how-to-idiomatically-copy-a-slice
-        //  1) check what is faster: clone_from_slice, copy_from_slice, copy_memory
-        //  2) check if there is any performance gain when compared to the double for loop copy
-        for y in 0..tile_size {
-            let start = (offset + y * img_width) as usize;
-            let end = start + tile_size as usize;
-            dst[start..end].copy_from_slice(&src[start..end]);
+        match fx {
+            1 =>
+            // TODO:
+            //  https://stackoverflow.com/questions/28219231/how-to-idiomatically-copy-a-slice
+            //  1) check what is faster: clone_from_slice, copy_from_slice, copy_memory
+            //  2) check if there is any performance gain when compared to the double for loop copy
+                for y in 0..tile_size {
+                    let start = (offset + y * img_width) as usize;
+                    let end = start + tile_size as usize;
+                    dst[start..end].copy_from_slice(&src[start..end]);
+                },
+            2 =>
+                for y in 0..tile_size {
+                    for x in 0..tile_size {
+                        let current = (offset + y * img_width + x) as usize;
+                        dst[current] = src[current];
+                    }
+                },
+            _ => panic!("only 1 and 2 are supported as fx type!"),
+
         }
 
-//        for y in 0..tile_size {
-//            for x in 0..tile_size {
-//                      let current = (offset + y * img_width + x) as usize;
-//                      dst[current] = src[current];
-//                  }
-//        }
     }
 }
 
@@ -81,7 +87,7 @@ fn main() {
         if current_index < tiles_count {
             let v = randomizer[current_index];
             current_index = current_index + 1;
-            process_framebuffer(&buffer, &mut dest_buffer, v, width as u32, tile_size as u32);
+            process_framebuffer(&buffer, &mut dest_buffer, v, width as u32, tile_size as u32, opt.fx);
         } else {
             if !end {
                 end = true;
