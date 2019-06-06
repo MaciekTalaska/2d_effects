@@ -47,11 +47,18 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
                 },
             2 =>
                 for y in 0..tile_size {
+                    let start = (offset + y * img_width) as usize;
+                    let end = start + tile_size as usize;
+                    dst[start..end].clone_from_slice(&src[start..end]);
+                },
+            3 =>
+                for y in 0..tile_size {
                     for x in 0..tile_size {
                         let current = (offset + y * img_width + x) as usize;
                         dst[current] = src[current];
                     }
                 },
+
             _ => panic!("only 1 and 2 are supported as fx type!"),
 
         }
