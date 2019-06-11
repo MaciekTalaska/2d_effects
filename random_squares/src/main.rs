@@ -20,6 +20,9 @@ struct Opt {
 
     #[structopt(short = "f", long = "fx", default_value = "1")]
     fx: u8,
+
+    #[structopt(short = "b", long = "benchmark")]
+    benchmark: bool,
 }
 
 
@@ -60,9 +63,7 @@ pub fn process_framebuffer(src: &[u32], dst: &mut [u32], index: u32, img_width: 
                 },
 
             _ => panic!("only 1 and 2 are supported as fx type!"),
-
         }
-
     }
 }
 
@@ -100,6 +101,9 @@ fn main() {
                 end = true;
                 let t = time.elapsed().as_micros();
                 println!("time elapsed: {}", t);
+                if opt.benchmark {
+                    std::process::exit(0);
+                }
             }
         }
         window.update_with_buffer(&dest_buffer).unwrap();
