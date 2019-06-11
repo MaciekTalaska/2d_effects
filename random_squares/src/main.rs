@@ -100,7 +100,8 @@ fn main() {
             if !end {
                 end = true;
                 let t = time.elapsed().as_micros();
-                println!("time elapsed: {}", t);
+                // fx type, tile size, time
+                println!("{},\t{},\t{}", opt.fx, opt.tile_size ,t);
                 if opt.benchmark {
                     std::process::exit(0);
                 }
