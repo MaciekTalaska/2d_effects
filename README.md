@@ -7,7 +7,7 @@ For the sake of reading images, I use [tinyppm](https://crates.io/crates/tinyppm
 Important note on dev dependencies:
 -----------------------------------
 
-Minifb that is used to obtain direct access to framebuffer has some additional dependencies. In case these are not met, you get 
+Minifb that is used to obtain direct access to framebuffer has some additional dependencies. In case you get an error message related to the missing "Xcuror.h" during compilation: 
 
 ```
 running: "cc" "-O3" "-ffunction-sections" "-fdata-sections" "-fPIC" "-m64" "-Wall" "-Wextra" "-o" "/home/emgieha/projects/_rust/2d_effects/random_squares/target/release/build/minifb-f4459292eec3ce7b/out/src/native/x11/X11MiniFB.o" "-c" "src/native/x11/X11MiniFB.c"
@@ -18,4 +18,4 @@ cargo:warning=compilation terminated.
 exit code: 1
 ```
 
-On Ubuntu the solution is to install small package `libxcursor-dev`.
+(on Ubuntu) install small package `libxcursor-dev`.
