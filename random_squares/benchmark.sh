@@ -2,6 +2,14 @@
 
 # build if executable does not exist
 
+
+
+if test -f "results.txt"; then
+  timestamp=$(date "+%Y.%m.%d-%H.%M%s")
+  old="results.txt"
+  mv $old $old.$timestamp
+fi
+
 touch results.txt
 
 echo -e "fx,\ttile,\ttime" >> results.txt
