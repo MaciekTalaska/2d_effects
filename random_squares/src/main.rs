@@ -91,7 +91,7 @@ fn main() {
 
     let time = Instant::now();
     let mut end: bool = false;
-    while window.is_open() && !window.is_key_down(Key::Escape) {
+    while window.is_open() && (!window.is_key_down(Key::Escape) && (!window.is_key_down(Key::C)))  {
         if current_index < tiles_count {
             let v = randomizer[current_index];
             current_index = current_index + 1;
