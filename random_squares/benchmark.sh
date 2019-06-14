@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 # build if executable does not exist
+if ! test -f target/release/random_squares; then
+  cargo build --release
+fi
 
-
-
+# if results.txt already exists - add timestamp to it
+# so we save the old, but always newest is: results.txt
 if test -f "results.txt"; then
   timestamp=$(date "+%Y.%m.%d-%H.%M%s")
   old="results.txt"
