@@ -19,6 +19,31 @@ Allowed sizes are dependent on screen (image) size. The sample image is 640 x 48
 Running the effect
 ==================
 
-1. `cargo run sky.ppm` - this will execute with default tile size set to 8 x 8 pixels
+Several command line options could be used to run this effect with a bit different behavior:
 
-2. `cargo run sky.ppm X` - this will run the effect with the X as specified tile size. Please note that if tile size do not divide whole image without any "leftovers" - the effect will crash.
+- `i/image <image_name>.ppm` [required] - path to the ppm image to be used for the effect
+
+- `t/tilesize <number>` - specifies tile size. If not given, 8 is used as a default, so that tiles will be squares of size 8 (8 x 8 pixels)
+
+- `f/fx <number` (where number is: 1, 2 or 3) - this is just one of the 3 different ways of copying pixels. This options should be used together with `benchmark` to check which method is the fastest.
+
+- `b/benchmark` this flag indicates if effect should be run in benchmark mode or not. In case the benchmark mode is chosen, effect duration will be calculation and written to the default output (so that it is easy to run it many times via script and collect the results).
+
+*Note:* if you're interested in running benchmarks please have a look at the `benchmark.sh` file.
+
+#### Examples:
+
+`random_squares -i <imagename>.ppm` - runs effect with specified image and default tile size of 8, using default internal copy method (1)
+
+`random_squares -i <imagename>.ppm -t 16` - runs effect with specified image and tile size of 16 pixels by 16 pixels, using default internal copy method (1)
+
+`random_squares -i <imagename>.ppm -t 32 -f 2 -b` - runs effect with specified image and tile size of 32 by 32 pixels, using internal method copy (2) and in benchmark mode.
+
+Dependencies
+============
+
+This tiny app depends on:
+ - [minifb](https://crates.io/crates/minifb)
+ - [tinyppm](https://crates.io/crates/tinyppm)
+ - rand
+ - structopt
