@@ -2,7 +2,17 @@ This is a simple effect that displays 2d image in a more fancy way.
 
 Image is being shown by uncovering square areas of the screen. These areas are of predefined size, and the order is random-ish.
 
-It is possible to specify (and change) the size of the tile. Allowed sizes:
+
+Running the effect
+==================
+
+Several command line options could be used to run this effect with a bit different behavior:
+
+- `i/image <image_name>.ppm` [required] - path to the ppm image to be used for the effect
+
+- `t/tilesize <number>` - specifies tile size. If not given, 8 is used as a default, so that tiles will be squares of size 8 (8 x 8 pixels)
+
+Tile sizes must be dividers of image dimensions.  Assuming one of the images from the `../resources` directory is used (both images are 640 x 480) - allowed sizes are:
 - 1
 - 2
 - 4
@@ -14,16 +24,7 @@ It is possible to specify (and change) the size of the tile. Allowed sizes:
 - 32
 - 40
 
-Allowed sizes are dependent on screen (image) size. The sample image is 640 x 480, so square should be small/big enough to make it possible to divide screen into square areas (without any fractions of screen being left).
-
-Running the effect
-==================
-
-Several command line options could be used to run this effect with a bit different behavior:
-
-- `i/image <image_name>.ppm` [required] - path to the ppm image to be used for the effect
-
-- `t/tilesize <number>` - specifies tile size. If not given, 8 is used as a default, so that tiles will be squares of size 8 (8 x 8 pixels)
+Allowed tile sizes are dependent on screen (image) size. The sample image is 640 x 480, so square should be small/big enough to make it possible to divide screen into square areas (without any fractions of screen being left).
 
 - `f/fx <number` (where number is: 1, 2 or 3) - this is just one of the 3 different ways of copying pixels. This options should be used together with `benchmark` to check which method is the fastest.
 
