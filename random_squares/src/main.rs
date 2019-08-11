@@ -73,7 +73,15 @@ fn main() {
     let image_name = &opt.image;
     let tile_size = opt.tile_size;
 
-    let (width, height, buffer) = tinyppm::ppm_loader::read_image_data(image_name);
+    let ppm_image_result = tinyppm::ppm_loader::read_image_data(image_name);
+    let ppm_image = match ppm_image_result {
+        Ok(image) => image,
+        _ => panic!("unable to read specified image file!"),
+    };
+
+    let width = ppm_image.get_width();
+    let height = ppm_image.get_height();
+    let buffer = ppm_image.get_pixels();
 
     let mut window = Window::new("ppm viewer in Rust",
                                  width,
