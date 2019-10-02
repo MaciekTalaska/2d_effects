@@ -8,7 +8,7 @@ edition = "2018"
 structopt = "0.2"
 minifb = "0.11.2"
 rand = "0.6.5"
-tinyppm = { path = "../../tinyppm" }
+tinyppm = "0.2.0"
 
 [profile.dev]
 debug = true

@@ -79,9 +79,9 @@ fn main() {
         _ => panic!("unable to read specified image file!"),
     };
 
-    let width = ppm_image.get_width();
-    let height = ppm_image.get_height();
-    let buffer = ppm_image.get_pixels();
+    let width = ppm_image.width();
+    let height = ppm_image.height();
+    let buffer = ppm_image.pixels();
 
     let mut window = Window::new("ppm viewer in Rust",
                                  width,
