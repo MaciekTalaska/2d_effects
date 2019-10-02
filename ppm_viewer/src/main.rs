@@ -15,12 +15,12 @@ fn main() {
     };
 
     let mut window = Window::new("ppm viewer in Rust",
-                                 ppm_image.get_width(),
-                                 ppm_image.get_height(),
+                                 ppm_image.width(),
+                                 ppm_image.height(),
                                  WindowOptions::default()).unwrap_or_else(|e| {panic!("{}", e)});
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        window.update_with_buffer(&ppm_image.get_pixels()).unwrap();
+        window.update_with_buffer(&ppm_image.pixels()).unwrap();
     }
 }
 
